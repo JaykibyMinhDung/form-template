@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công ty Bavaan - TTS Fullstack</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="https://bavaan.com/wp-content/uploads/2022/07/cropped-bavaan_ico_2-32x32.png" sizes="32x32">
+    <link rel="icon" href="https://bavaan.com/wp-content/uploads/2022/07/cropped-bavaan_ico_2-192x192.png"
+        sizes="192x192">
+</head>
+
+<body>
+    <div>
+        <form class="login">
+            <input id="phone" type="text" placeholder="Số điện thoại" />
+            <input id="email" type="email" placeholder="Email" />
+            <div class="container_select">
+                <select id="city" onchange="handleChangeCity(this.value)">
+                    <option value="">Chọn tỉnh thành phố</option>
+                    <option value="Hà Nội">Hà Nội</option>
+                    <option value="Đà Nẵng">Đà Nẵng</option>
+                    <option value="Sài Gòn">Sài Gòn</option>
+                </select>
+                <select id="district">
+                    <option value="">Chọn tỉnh quận huyện</option>
+                </select>
+            </div>
+            <input type="button" value="submit" onclick="handleSubmit()" />
+        </form>
+    </div>
+    <div>
+        <form class="results-form" action="">
+            <div id="showErr">
+
+            </div>
+            <fieldset>
+                <legend>
+                    <h3>Kết quả:</h3>
+                </legend>
+                <div class="login-input-wrp">
+                    <br />
+                    <input id="phoneResult" class="inputText" placeholder="Số điện thoại" type="text" disabled />
+                    <span class="floating-label">Số điện thoại</span>
+                </div>
+                <div class="login-input-wrp">
+                    <br />
+                    <input onchange="" id="emailResult" class="inputText" placeholder="Email" type="email" disabled />
+                    <span class="floating-label">Email</span>
+                </div>
+                <div class="login-input-wrp">
+                    <br />
+                    <input id="cityResult" class="inputText" type="text" placeholder="Thành phố" disabled />
+                    <span class="floating-label">Thành phố</span>
+                </div>
+                <div class="login-input-wrp">
+                    <br />
+                    <input id="districtResult" class="inputText" type="text" placeholder="Quận/huyện" disabled />
+                    <span class="floating-label">Quận/huyện</span>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+    <script>
+        const emailInput = document.getElementById("email");
+        const phoneInput = document.getElementById("phone");
+        const cityInput = document.getElementById("city");
+        const districtInput = document.getElementById("district");
+
+        const emailResults = document.getElementById("emailResult");
+        const phoneResults = document.getElementById("phoneResult");
+        const cityResults = document.getElementById("cityResult");
+        const districtResults = document.getElementById("districtResult");
+
+        const showClass = document.getElementsByClassName("floating-label");
+
+        const showErr = document.getElementById("showErr");
+
+        for (let i = 0; i < showClass.length; i++) {
+            showClass[i].style.opacity = 0;
+        }
+
+        const arrayHaNoi = ["Cầu Giấy", "Hoàn Kiếm", "Ba Đình"];
+        const arraySaiGon = ["Bình Thạnh", "Quận 1", "Quận 3"];
+        const arrayDaNang = ["Sơn Trà"];
+
+        function validateEmail(email) {
+            const re =
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(String(email).toLowerCase());
+        }
+        function validatePhoneNumber(phone) {
+
+            const regexPhoneNumber = /(0[3|5|7|8|9])+([0-9]{8})\b/g;
+
+            return phone.match(regexPhoneNumber) ? true : false;
+
+        }
+
+        function deleteError() { 
+        //e.firstElementChild can be used. 
+        let child = showErr.lastElementChild;  
+        while (child) { 
+            showErr.removeChild(child); 
+            child = showErr.lastElementChild; 
+        } 
+    } 
+
+        const handleChangeCity = (e) => {
+            const length = districtInput.options.length;
+            for (i = length - 1; i >= 0; i--) {
+                districtInput.options[i] = null;
+            }
+            if (e === "Hà Nội") {
+                for (let option = 0; option < arrayHaNoi.length; option++) {
+                    districtInput.add(new Option(arrayHaNoi[option]));
+                }
+            } else if (e === "Đà Nẵng") {
+                for (let option = 0; option < arrayDaNang.length; option++) {
+                    districtInput.add(new Option(arrayDaNang[option]));
+                }
+
+            } else if (e === "Sài Gòn") {
+                for (let option = 0; option < arraySaiGon.length; option++) {
+                    districtInput.add(new Option(arraySaiGon[option]));
+                }
+            } else {
+                var opt = document.createElement('option');
+                opt.value = "";
+                opt.innerHTML = "Chọn tỉnh quận huyện";
+                districtInput.appendChild(opt);
+            }
+        };
+
+        function handleSubmit() {
+            if (validatePhoneNumber(phoneInput.value) && validateEmail(emailInput.value)) {
+                phoneResults.value = phoneInput.value;
+                emailResults.value = emailInput.value;
+                cityResults.value = cityInput.value;
+                districtResults.value = districtInput.value;
+
+                phoneInput.value = '';
+                emailInput.value = '';
+                cityInput.value = '';
+
+                const length = districtInput.options.length;
+                for (i = length - 1; i >= 0; i--) {
+                    districtInput.options[i] = null;
+                };
+
+                for (let i = 0; i < showClass.length; i++) {
+                    showClass[i].style.opacity = 1;
+                };
+
+                const opt = document.createElement('option');
+                opt.value = "";
+                opt.innerHTML = "Chọn tỉnh quận huyện";
+                districtInput.appendChild(opt);
+
+                return deleteError()
+            } else {
+                if (!validatePhoneNumber(phoneInput.value) ) {
+                    const err = document.createElement('p');
+                    err.innerHTML = "* Số điện thoại chưa đúng định dạng, vui lòng thử lại";
+                    err.style.color = "red"
+                    return showErr.appendChild(err);          
+                } else if (!validateEmail(emailInput.value)) {
+                    const err = document.createElement('p');
+                    err.innerHTML = "* Email chưa đúng định dạng, vui lòng thử lại";
+                    err.style.color = "red"
+                    return showErr.appendChild(err);          
+                }
+            }
+        }
+    </script>
+    <!-- <script src="index.js"></script> -->
+</body>
+
+</html>
